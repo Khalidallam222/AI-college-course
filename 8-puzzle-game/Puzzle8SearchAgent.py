@@ -9,10 +9,24 @@ Puzzle8 Game
 -------------
 """
 
+from random import randrange, sample
+
 
 class Puzzle8:
-    def __init__(self, init_state):
+    def __init__(self, init_state=None):
+        if init_state is None:
+            init_state = [0, 1, 2, 3, 4, 5, 6, 7, 8]
         self.initial_state = init_state
+
+    def shuffle(self, n):
+        # generate a random puzzle by applying N random actions to a sorted puzzle
+        puzzle = list(self.initial_state)
+        for _ in range(n):
+            actions = self.available_mov(puzzle)
+            rand_index = randrange(0, len(actions))
+            rand_action = actions[rand_index]
+            puzzle = self.apply_action(puzzle, rand_action)
+        self.initial_state = puzzle
 
     def get_initial_state(self):
         return self.initial_state
@@ -78,7 +92,9 @@ class Puzzle8:
 
         return possible_moves
 
-    def print_puzzle(self, puzzle):
+    def print_puzzle(self, puzzle=None):
+        if puzzle is None:
+            puzzle = self.initial_state
         p = ''
         for i in puzzle:
             if i == 0:
@@ -110,14 +126,15 @@ class DFS:
         return node
 
     def get_solution(self, problem, node, visited):
-        solution = {'path': problem.get_path(node['path']), 'complexity': len(visited)}
+        solution = {'path': problem.get_path(node['path']), 'time complexity': len(visited)}
         return solution
 
     def add_node(self, problem, current_node, action):
         next_state = problem.apply_action(current_node['state'], action)
         next_node = {'state': next_state, 'path': [current_node['path'], action]}
         return next_node
-
+    def __str__(self):
+        return "DFS"
 
 class BFS:
     def __init__(self):
@@ -133,7 +150,7 @@ class BFS:
         return node
 
     def get_solution(self, problem, node, visited):
-        solution = {'path': problem.get_path(node['path']), 'complexity': len(visited)}
+        solution = {'path': problem.get_path(node['path']), 'time complexity': len(visited)}
         return solution
 
     def add_node(self, problem, current_node, action):
@@ -141,6 +158,8 @@ class BFS:
         next_node = {'state': next_state, 'path': [current_node['path'], action]}
         return next_node
 
+    def __str__(self):
+        return "BFS"
 
 class UCS:
     def __init__(self):
@@ -157,7 +176,7 @@ class UCS:
         return node
 
     def get_solution(self, problem, node, visited):
-        solution = {'path': problem.get_path(node['path']), 'complexity': len(visited)}
+        solution = {'path': problem.get_path(node['path']), 'time complexity': len(visited)}
         return solution
 
     def add_node(self, problem, current_node, action):
@@ -166,6 +185,8 @@ class UCS:
                      'cost': current_node['cost'] + problem.get_cost(action, current_node['state'])}
         return next_node
 
+    def __str__(self):
+        return "UCS"
 
 class Greedy:
     def __init__(self):
@@ -183,7 +204,7 @@ class Greedy:
         return node
 
     def get_solution(self, problem, node, visited):
-        solution = {'path': problem.get_path(node['path']), 'complexity': len(visited)}
+        solution = {'path': problem.get_path(node['path']), 'time complexity': len(visited)}
         return solution
 
     def add_node(self, problem, current_node, action):
@@ -192,6 +213,8 @@ class Greedy:
         next_node["heuristic"] = problem.compute_heuristic(next_node["state"])
         return next_node
 
+    def __str__(self):
+        return "Greedy"
 
 class Astar:
     def __init__(self):
@@ -209,7 +232,7 @@ class Astar:
         return node
 
     def get_solution(self, problem, node, visited):
-        solution = {'path': problem.get_path(node['path']), 'complexity': len(visited)}
+        solution = {'path': problem.get_path(node['path']), 'time complexity': len(visited)}
         return solution
 
     def add_node(self, problem, current_node, action):
@@ -218,6 +241,9 @@ class Astar:
         next_node['cost'] = backward_cost = current_node['cost'] + problem.get_cost(action, current_node['state'])
         next_node["f"] = problem.compute_heuristic(next_node["state"]) + backward_cost
         return next_node
+
+    def __str__(self):
+        return "Astar"
     # ======================================================= # ================================================ #
     # ========
 
@@ -243,26 +269,53 @@ def solve(strategy, problem):
 
 
 if __name__ == '__main__':
-    puzzle = [
-        3, 1, 2,
-        4, 0, 5,
-        6, 7, 8
-    ]
-    import random
+    # puzzle = [
+    #     3, 1, 2,
+    #     4, 0, 5,
+    #     6, 7, 8
+    # ]
+    #
+    # population = range(9)  # A list with numbers from 0 to 8
+    # unique_random_puzzle = sample(population, 9)
+    # print(unique_random_puzzle)
+    #
+    # p = Puzzle8(unique_random_puzzle)
+    # s = Astar()
+    # # human_play(puzzle)
 
-    population = range(9)  # A list with numbers from 0 to 8
-    unique_random_puzzle = random.sample(population, 9)
-    print(unique_random_puzzle)
+    # solution2 = solve(s, p)
 
-    p = Puzzle8(unique_random_puzzle)
-    s = Astar()
-    # human_play(puzzle)
-    # solution1 = solve('DFS', unique_random_puzzle)
-    solution2 = solve(s, p)
-    # print(solution1)
-    print(solution2)
+    # print(solution2)
+    #
+    # puzzle = unique_random_puzzle
+    # for move in solution2['path']:
+    #     puzzle = p.apply_action(puzzle, move)
+    #     p.print_puzzle(puzzle)
 
-    puzzle = unique_random_puzzle
-    for move in solution2['path']:
-        puzzle = p.apply_action(puzzle, move)
-        p.print_puzzle(puzzle)
+    puzzle = Puzzle8()
+    print("Name: khalid samy ismael allam")
+    for i in range(10):
+        puzzle.shuffle(50)
+        puzzle.print_puzzle()
+        Strategies = [BFS(), UCS(), Greedy(), Astar()]
+        for strategy in Strategies:
+            sol = solve(strategy, puzzle)
+            print(30*'<', strategy, 30*">")
+            print(sol)
+
+    print(30*"#")
+    print(30*"#")
+    print(30*"#")
+    print("All Search Strategies :")
+    print(30*"#")
+    print(30*"#")
+    print(30*"#")
+
+    for i in range(2):
+        puzzle.shuffle(1)
+        puzzle.print_puzzle()
+        Strategies = [DFS(), BFS(), UCS(), Greedy(), Astar()]
+        for strategy in Strategies:
+            sol = solve(strategy, puzzle)
+            print(30*'<', strategy, 30*">")
+            print(sol)
