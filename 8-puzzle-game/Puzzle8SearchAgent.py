@@ -292,30 +292,32 @@ if __name__ == '__main__':
     #     puzzle = p.apply_action(puzzle, move)
     #     p.print_puzzle(puzzle)
 
-    puzzle = Puzzle8()
     print("Name: khalid samy ismael allam")
     for i in range(10):
+        puzzle = Puzzle8()
         puzzle.shuffle(50)
         puzzle.print_puzzle()
         Strategies = [BFS(), UCS(), Greedy(), Astar()]
         for strategy in Strategies:
             sol = solve(strategy, puzzle)
-            print(30*'<', strategy, 30*">")
+            print(30 * '<', strategy, 30 * ">")
             print(sol)
 
-    print(30*"#")
-    print(30*"#")
-    print(30*"#")
+    print(30 * "#")
+    print(30 * "#")
+    print(30 * "#")
     print("All Search Strategies :")
-    print(30*"#")
-    print(30*"#")
-    print(30*"#")
+    print(30 * "#")
+    print(30 * "#")
+    print(30 * "#")
 
     for i in range(2):
+        puzzle = Puzzle8()
         puzzle.shuffle(1)
         puzzle.print_puzzle()
         Strategies = [DFS(), BFS(), UCS(), Greedy(), Astar()]
         for strategy in Strategies:
             sol = solve(strategy, puzzle)
-            print(30*'<', strategy, 30*">")
+            print(30 * '<', strategy, 30 * ">")
             print(sol)
+
